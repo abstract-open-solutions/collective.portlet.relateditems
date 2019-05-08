@@ -13,7 +13,6 @@
              tal:repeat="item related_items">
         <dd tal:define="oddrow repeat/item/odd;
                         plone_view context/@@plone;
-                        getIcon nocall:plone_view/getIcon;
                         toLocalizedTime nocall:plone_view/toLocalizedTime;
                         item_has_leadimage python:view.itemHasLeadImage(item);
                         item_object item/getObject;"

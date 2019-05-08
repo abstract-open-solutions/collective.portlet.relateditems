@@ -5,7 +5,6 @@ from zope.interface import implements
 from Products.ATContentTypes.interface import IATTopic
 
 from zope import schema
-from zope.formlib import form
 from zope.component import getMultiAdapter
 
 from plone.portlets.interfaces import IPortletDataProvider
@@ -30,6 +29,12 @@ try:
     LEADIMAGE_EXISTS = True
 except ImportError:
     LEADIMAGE_EXISTS = False
+
+from Products.CMFPlone.utils import getFSVersionTuple
+PLONE4 = getFSVersionTuple()[0] <= 4
+
+if not PLONE4:
+    from zope.formlib import form
 
 
 _N_CHAR = 100
@@ -428,7 +433,11 @@ class AddForm(base.AddForm):
     zope.formlib which fields to display. The create() method actually
     constructs the assignment that is being added.
     """
-    form_fields = form.Fields(IRelatedItems)
+    if PLONE4:
+        form_fields = form.Fields(IRelatedItems)
+    else:
+        schema = IRelatedItems
+
     label = _(u"Add Related Items Portlet")
     description = _(u"This portlet displays recent Related Items.")
 
@@ -453,7 +462,11 @@ class EditForm(base.EditForm):
     This is registered with configure.zcml. The form_fields variable tells
     zope.formlib which fields to display.
     """
-    form_fields = form.Fields(IRelatedItems)
+    if PLONE4:
+        form_fields = form.Fields(IRelatedItems)
+    else:
+        schema = IRelatedItems
+
     label = _(u"Edit Related Items Portlet")
     description = _(u"This portlet displays related items based on "
                      "keywords matches, title and related items.")
